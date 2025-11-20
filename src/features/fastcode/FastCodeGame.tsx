@@ -4,7 +4,7 @@ import { SNIPPETS } from './snippets'
 import { CodeSnippet } from './types'
 import { TOP_PLAYERS } from './topPlayers'
 
-const TOTAL_TIME = 60
+const TOTAL_TIME = 120
 
 const KEYWORDS = new Set([
   'const',
