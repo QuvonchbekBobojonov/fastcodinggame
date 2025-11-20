@@ -6,6 +6,8 @@ export default {
       fontFamily: {
         mono: ['"JetBrains Mono"', 'SFMono-Regular', 'Menlo', 'monospace'],
       },
+
+
       keyframes: {
         blink: {
           '0%, 50%': { opacity: '1' },
@@ -20,4 +22,3 @@ export default {
   },
   plugins: [],
 }
-

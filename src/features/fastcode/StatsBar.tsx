@@ -13,12 +13,12 @@ interface StatItemProps {
 }
 
 const StatItem = ({ label, value, unit }: StatItemProps) => (
-  <div className="rounded-2xl border border-[#e5e5e5] bg-white px-5 py-4 text-center shadow-[0_12px_25px_rgba(10,74,138,0.05)]">
-    <p className="text-xs uppercase tracking-[0.25em] text-[#666666]">{label}</p>
-    <p className="mt-2 text-2xl font-extrabold text-[#1f2937]">
+  <div className="rounded-2xl border border-[#E5E7EB] bg-white px-5 py-4 text-center shadow-[0_12px_25px_rgba(10,74,138,0.05)] transition-colors duration-300">
+    <p className="text-xs uppercase tracking-[0.25em] text-[#6B7280]">{label}</p>
+    <p className="mt-2 text-2xl font-extrabold text-[#0F172A]">
       {value}
       {unit ? (
-        <span className="ml-1 text-sm font-semibold text-[#94a3b8]">{unit}</span>
+        <span className="ml-1 text-sm font-semibold text-[#6B7280]">{unit}</span>
       ) : null}
     </p>
   </div>

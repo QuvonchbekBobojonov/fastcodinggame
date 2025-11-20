@@ -37,11 +37,11 @@ export default function BetaBanner() {
   if (hidden) return null
 
   return (
-    <div className="w-full bg-yellow-400/90 backdrop-blur-md text-yellow-900 flex items-center justify-between py-2 px-4 text-sm font-medium shadow">
+    <div className="w-full bg-yellow-400/90 backdrop-blur-md text-yellow-900 flex items-center justify-between py-2 px-4 text-sm font-medium shadow transition-colors duration-300">
       <span>⚠️ Sayt hozircha BETA rejimida ishlayapti — xatoliklar bo‘lishi mumkin.</span>
       <button
         onClick={hide}
-        className="text-yellow-900 font-bold px-2 hover:opacity-70"
+        className="text-yellow-900 font-bold px-2 hover:opacity-70 transition-opacity duration-300"
       >
         ✕
       </button>
