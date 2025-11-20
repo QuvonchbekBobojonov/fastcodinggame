@@ -5,6 +5,7 @@ import FastCodeGame from './features/fastcode/FastCodeGame'
 import TopPlayersPage from './features/top-players/TopPlayersPage'
 import { useLanguage } from './i18n/LanguageProvider'
 import { LANGUAGE_OPTIONS, Locale } from './i18n/translations'
+import BetaBanner from './components/BetaBanner'
 
 const navLinkClasses = ({ isActive }: { isActive: boolean }) =>
   [
@@ -17,6 +18,7 @@ const App = () => {
 
   return (
     <div className="min-h-screen bg-[#f7f7f7] px-4 py-10 text-[#0f172a]">
+      <BetaBanner />
       <div className="mx-auto flex max-w-6xl flex-col gap-10">
         <header className="flex flex-wrap items-center justify-between gap-4 rounded-3xl border border-[#e5e5e5] bg-white px-6 py-4 shadow-[0_20px_50px_rgba(15,23,42,0.06)]">
           <div className="flex items-center gap-3">
