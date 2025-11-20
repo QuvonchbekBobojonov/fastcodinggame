@@ -165,6 +165,23 @@ const FastCodeGame = () => {
 
   useEffect(() => () => stopTimer(), [])
 
+  useEffect(() => {
+    const disable = (e: Event) => e.preventDefault();
+  
+    document.addEventListener("copy", disable);
+    document.addEventListener("contextmenu", disable);
+    document.addEventListener("selectstart", disable);
+    document.addEventListener("dragstart", disable);
+  
+    return () => {
+      document.removeEventListener("copy", disable);
+      document.removeEventListener("contextmenu", disable);
+      document.removeEventListener("selectstart", disable);
+      document.removeEventListener("dragstart", disable);
+    };
+  }, []);
+  
+
   const hardReset = () => {
     stopTimer()
     setInputValue('')
