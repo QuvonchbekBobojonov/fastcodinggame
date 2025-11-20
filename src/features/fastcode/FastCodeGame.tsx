@@ -3,6 +3,7 @@ import StatsBar from './StatsBar'
 import { SNIPPETS } from './snippets'
 import { CodeSnippet } from './types'
 import { TOP_PLAYERS } from './topPlayers'
+import { useLanguage } from '../../i18n/LanguageProvider'
 
 const TOTAL_TIME = 60
 
@@ -108,6 +109,7 @@ const computeColorMap = (code: string) => {
 }
 
 const FastCodeGame = () => {
+  const { t } = useLanguage()
   const [snippetIndex, setSnippetIndex] = useState(0)
   const [inputValue, setInputValue] = useState('')
   const [timeLeft, setTimeLeft] = useState(TOTAL_TIME)
@@ -137,7 +139,7 @@ const FastCodeGame = () => {
   const accuracy = typedChars === 0 ? 100 : (correctChars / typedChars) * 100
   const wpm = elapsed === 0 ? 0 : (typedChars / 5) / (elapsed / 60)
   const charPerMin = elapsed === 0 ? 0 : (typedChars / elapsed) * 60
-  const progress = Math.min(100, (typedChars / totalChars) * 100)
+  const progress = isFinished ? 100 : Math.min(100, (typedChars / totalChars) * 100)
 
   const stopTimer = () => {
     if (intervalRef.current) {
@@ -209,6 +211,23 @@ const FastCodeGame = () => {
   useEffect(() => {
     editorRef.current?.focus()
   }, [snippetIndex])
+
+  useEffect(() => {
+    if (typeof document === 'undefined' || typeof window === 'undefined') return
+
+    const previousOverflow = document.body.style.overflow
+
+    if (isFinished) {
+      document.body.style.overflow = 'hidden'
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    } else {
+      document.body.style.overflow = previousOverflow
+    }
+
+    return () => {
+      document.body.style.overflow = previousOverflow
+    }
+  }, [isFinished])
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -383,7 +402,7 @@ const FastCodeGame = () => {
 
       <div className="rounded-2xl border border-[#e5e5e5] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.05)]">
         <div className="text-xs font-semibold uppercase tracking-[0.3em] text-[#6b7280]">
-          Progress
+          {t('fastcode.progress')}
         </div>
         <div className="mt-4 h-2 w-full rounded-full bg-[#eef2ff]">
           <div
@@ -441,25 +460,40 @@ const FastCodeGame = () => {
       </div>
 
       {isFinished && (
-        <div className="w-full animate-fade-in rounded-2xl border border-[#e5e5e5] bg-white p-6 text-center shadow-[0_15px_40px_rgba(15,23,42,0.07)]">
-          <p className="text-xs uppercase tracking-[0.35em] text-[#6b7280]">Session summary</p>
-          <div className="mt-4 grid gap-4 sm:grid-cols-2">
-            <div className="rounded-2xl border border-[#e5e5e5] bg-[#f9fafb] p-4">
-              <p className="text-xs uppercase text-[#6b7280]">Final WPM</p>
-              <p className="text-3xl font-extrabold text-[#0f172a]">{formatNumber(wpm)}</p>
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-[#0f172a]/70 px-4 py-8 backdrop-blur-sm"
+          role="dialog"
+          aria-modal
+        >
+          <div
+            className="relative w-full max-w-xl max-h-[80vh] overflow-y-auto animate-fade-in rounded-3xl border border-[#e5e5e5] bg-white p-6 text-center shadow-[0_25px_60px_rgba(15,23,42,0.35)]"
+          >
+            <p className="text-xs uppercase tracking-[0.35em] text-[#6b7280]">Session summary</p>
+            <div className="mt-4 grid gap-4 sm:grid-cols-2">
+              <div className="rounded-2xl border border-[#e5e5e5] bg-[#f9fafb] p-4">
+                <p className="text-xs uppercase text-[#6b7280]">Final WPM</p>
+                <p className="text-3xl font-extrabold text-[#0f172a]">{formatNumber(wpm)}</p>
+              </div>
+              <div className="rounded-2xl border border-[#e5e5e5] bg-[#f9fafb] p-4">
+                <p className="text-xs uppercase text-[#6b7280]">Accuracy</p>
+                <p className="text-3xl font-extrabold text-[#0f172a]">{formatNumber(accuracy)}%</p>
+              </div>
+              <div className="rounded-2xl border border-[#e5e5e5] bg-[#f9fafb] p-4">
+                <p className="text-xs uppercase text-[#6b7280]">Correct chars</p>
+                <p className="text-2xl font-bold text-[#16a34a]">{correctChars}</p>
+              </div>
+              <div className="rounded-2xl border border-[#e5e5e5] bg-[#f9fafb] p-4">
+                <p className="text-xs uppercase text-[#6b7280]">Incorrect chars</p>
+                <p className="text-2xl font-bold text-[#dc2626]">{incorrectChars}</p>
+              </div>
             </div>
-            <div className="rounded-2xl border border-[#e5e5e5] bg-[#f9fafb] p-4">
-              <p className="text-xs uppercase text-[#6b7280]">Accuracy</p>
-              <p className="text-3xl font-extrabold text-[#0f172a]">{formatNumber(accuracy)}%</p>
-            </div>
-            <div className="rounded-2xl border border-[#e5e5e5] bg-[#f9fafb] p-4">
-              <p className="text-xs uppercase text-[#6b7280]">Correct chars</p>
-              <p className="text-2xl font-bold text-[#16a34a]">{correctChars}</p>
-            </div>
-            <div className="rounded-2xl border border-[#e5e5e5] bg-[#f9fafb] p-4">
-              <p className="text-xs uppercase text-[#6b7280]">Incorrect chars</p>
-              <p className="text-2xl font-bold text-[#dc2626]">{incorrectChars}</p>
-            </div>
+            <button
+              type="button"
+              onClick={handleReset}
+              className="mt-6 inline-flex items-center justify-center rounded-full bg-[#0A4A8A] px-6 py-2 text-sm font-semibold text-white transition hover:bg-[#083666]"
+            >
+              Play again
+            </button>
           </div>
         </div>
       )}

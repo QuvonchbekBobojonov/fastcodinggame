@@ -1,15 +1,36 @@
 import { useState, useEffect } from "react"
 
+const STORAGE_KEY = "betaBannerHidden"
+
+const readHiddenState = () => {
+  if (typeof window === "undefined") return false
+  try {
+    return localStorage.getItem(STORAGE_KEY) === "true"
+  } catch {
+    return false
+  }
+}
+
 export default function BetaBanner() {
-  const [hidden, setHidden] = useState(false)
+  const [hidden, setHidden] = useState(readHiddenState)
 
   useEffect(() => {
-    const stored = localStorage.getItem("betaBannerHidden")
-    if (stored === "true") setHidden(true)
+    if (typeof window === "undefined") return
+    const handleStorage = (event: StorageEvent) => {
+      if (event.key === STORAGE_KEY) {
+        setHidden(event.newValue === "true")
+      }
+    }
+    window.addEventListener("storage", handleStorage)
+    return () => window.removeEventListener("storage", handleStorage)
   }, [])
 
   const hide = () => {
-    localStorage.setItem("betaBannerHidden", "true")
+    try {
+      localStorage.setItem(STORAGE_KEY, "true")
+    } catch {
+      // ignore write errors (private mode, etc.)
+    }
     setHidden(true)
   }
 
