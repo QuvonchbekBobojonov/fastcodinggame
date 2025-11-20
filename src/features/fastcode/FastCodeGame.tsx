@@ -42,7 +42,7 @@ const formatNumber = (value: number, digits = 1) =>
   Number.isFinite(value) ? value.toFixed(digits) : '0.0'
 
 const computeColorMap = (code: string) => {
-  const defaultColor = 'text-[#d4d4d4]'
+  const defaultColor = 'text-gray-500'
   const colors = new Array(code.length).fill(defaultColor)
   let index = 0
 
