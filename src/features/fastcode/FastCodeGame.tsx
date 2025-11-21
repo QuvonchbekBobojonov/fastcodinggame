@@ -8,26 +8,8 @@ import { useLanguage } from '../../i18n/LanguageProvider'
 const TOTAL_TIME = 60
 
 const KEYWORDS = new Set([
-  'const',
-  'let',
-  'var',
-  'function',
-  'return',
-  'import',
-  'from',
-  'if',
-  'else',
-  'for',
-  'while',
-  'class',
-  'export',
-  'async',
-  'await',
-  'switch',
-  'case',
-  'def',
-  'with',
-  'yield',
+  'const','let','var','function','return','import','from','if','else','for',
+  'while','class','export','async','await','switch','case','def','with','yield',
 ])
 
 const LANGUAGE_ICONS: Record<string, string> = {
@@ -117,14 +99,17 @@ const FastCodeGame = () => {
   const [isRunning, setIsRunning] = useState(false)
   const [isFinished, setIsFinished] = useState(false)
   const [showTooltip, setShowTooltip] = useState(true)
+
   const editorRef = useRef<HTMLDivElement | null>(null)
   const intervalRef = useRef<number | null>(null)
 
   const activeSnippet: CodeSnippet = SNIPPETS[snippetIndex]
-  const activeLanguageIcon =
-    LANGUAGE_ICONS[activeSnippet.language] ?? '💻'
+  const activeLanguageIcon = LANGUAGE_ICONS[activeSnippet.language] ?? '💻'
+
   const totalChars = activeSnippet.code.length
   const typedChars = inputValue.length
+  const remainingChars = Math.max(totalChars - typedChars, 0)
+
   const syntaxColorMap = useMemo(() => computeColorMap(activeSnippet.code), [activeSnippet.code])
 
   const { correctChars, incorrectChars } = useMemo(() => {
@@ -169,21 +154,18 @@ const FastCodeGame = () => {
   useEffect(() => () => stopTimer(), [])
 
   useEffect(() => {
-    const disable = (e: Event) => e.preventDefault();
-  
-    document.addEventListener("copy", disable);
-    document.addEventListener("contextmenu", disable);
-    document.addEventListener("selectstart", disable);
-    document.addEventListener("dragstart", disable);
-  
+    const disable = (e: Event) => e.preventDefault()
+    document.addEventListener("copy", disable)
+    document.addEventListener("contextmenu", disable)
+    document.addEventListener("selectstart", disable)
+    document.addEventListener("dragstart", disable)
     return () => {
-      document.removeEventListener("copy", disable);
-      document.removeEventListener("contextmenu", disable);
-      document.removeEventListener("selectstart", disable);
-      document.removeEventListener("dragstart", disable);
-    };
-  }, []);
-  
+      document.removeEventListener("copy", disable)
+      document.removeEventListener("contextmenu", disable)
+      document.removeEventListener("selectstart", disable)
+      document.removeEventListener("dragstart", disable)
+    }
+  }, [])
 
   const hardReset = () => {
     stopTimer()
@@ -208,36 +190,12 @@ const FastCodeGame = () => {
   }, [snippetIndex])
 
   useEffect(() => {
-    if (typeof document === 'undefined' || typeof window === 'undefined') return
-
-    const previousOverflow = document.body.style.overflow
-
-    if (isFinished) {
-      document.body.style.overflow = 'hidden'
-      window.scrollTo({ top: 0, behavior: 'smooth' })
-    } else {
-      document.body.style.overflow = previousOverflow
-    }
-
-    return () => {
-      document.body.style.overflow = previousOverflow
-    }
-  }, [isFinished])
-
-  useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (isFinished) return
 
-      const target = event.target as HTMLElement | null
-      const tag = target?.tagName
+      const tag = (event.target as HTMLElement)?.tagName
       if (tag && ['INPUT', 'TEXTAREA', 'SELECT'].includes(tag)) return
-      if (target?.getAttribute('contenteditable') === 'true') return
       if (event.metaKey || event.ctrlKey || event.altKey) return
-
-      if (event.key === 'Escape') {
-        editorRef.current?.blur()
-        return
-      }
 
       let handled = false
       let nextValue = inputValue
@@ -249,9 +207,6 @@ const FastCodeGame = () => {
         }
       } else if (event.key === 'Enter') {
         nextValue = `${inputValue}\n`
-        handled = true
-      } else if (event.key === 'Tab') {
-        nextValue = `${inputValue}\t`
         handled = true
       } else if (event.key.length === 1) {
         nextValue = `${inputValue}${event.key}`
@@ -278,7 +233,6 @@ const FastCodeGame = () => {
       let effects = 'transition-colors duration-150 px-[1px]'
 
       if (typedChar === undefined) {
-        // untouched character keeps syntax color
       } else if (typedChar === char) {
         baseColor = 'text-[#15803d]'
         effects += ' bg-[#e6f4ea] rounded-sm'
@@ -294,10 +248,9 @@ const FastCodeGame = () => {
       )
     })
 
-    const caret =
-      !isFinished && !showTooltip && typedChars <= activeSnippet.code.length ? (
-        <span key="caret" className="caret-blink inline-block h-5 w-px bg-[#0A4A8A] align-middle" />
-      ) : null
+    const caret = !isFinished && !showTooltip && typedChars <= activeSnippet.code.length ? (
+      <span key="caret" className="caret-blink inline-block h-5 w-px bg-[#0A4A8A] align-middle" />
+    ) : null
 
     if (caret) fragments.splice(typedChars, 0, caret)
 
@@ -305,9 +258,11 @@ const FastCodeGame = () => {
   }, [activeSnippet, inputValue, isFinished, showTooltip, typedChars, syntaxColorMap])
 
   return (
-    <section className="w-full max-w-4xl space-y-8 rounded-3xl border border-[#E5E7EB] bg-white px-6 py-8 text-[#0F172A] shadow-[0_30px_70px_rgba(15,23,42,0.08)] sm:px-12 sm:py-10 transition-colors duration-300">
+    <section className="w-full max-w-4xl space-y-8 rounded-3xl border border-[#E5E7EB] bg-white px-6 py-8 text-[#0F172A] shadow-[0_30px_70px_rgba(15,23,42,0.08)] sm:px-12 sm:py-10">
+      
+      {/* Header */}
       <header className="text-center space-y-4">
-        <div className="inline-flex items-center gap-2 rounded-full border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-1 text-sm font-semibold text-[#0A4A8A] transition-colors duration-300">
+        <div className="inline-flex items-center gap-2 rounded-full border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-1 text-sm font-semibold text-[#0A4A8A]">
           <span className="text-lg">{activeLanguageIcon}</span>
           <span className="tracking-wide text-[#0A4A8A]">
             {activeSnippet.language}
@@ -324,8 +279,9 @@ const FastCodeGame = () => {
         </p>
       </header>
 
+      {/* Timer + StatsBar */}
       <div className="flex flex-col items-center gap-6 md:flex-row">
-        <div className="flex h-32 w-32 flex-col items-center justify-center rounded-full border-[3px] border-[#0A4A8A] bg-white text-[#0A4A8A] shadow-[0_15px_35px_rgba(10,74,138,0.2)] transition-colors duration-300">
+        <div className="flex h-32 w-32 flex-col items-center justify-center rounded-full border-[3px] border-[#0A4A8A] bg-white text-[#0A4A8A] shadow-[0_15px_35px_rgba(10,74,138,0.2)]">
           <span className="text-4xl font-bold">{timeLeft}</span>
           <span className="text-[11px] uppercase tracking-[0.4em] text-[#0A4A8A]/80">
             {t('fastcode.timer.seconds')}
@@ -336,70 +292,85 @@ const FastCodeGame = () => {
         </div>
       </div>
 
+      {/* Leaderboard */}
       <div className="grid w-full gap-4 md:grid-cols-3">
-        <div className="rounded-3xl border border-[#E5E7EB] bg-white p-4 shadow-[0_10px_30px_rgba(15,23,42,0.04)] md:col-span-3 transition-colors duration-300">
+        <div className="rounded-3xl border border-[#E5E7EB] bg-white p-4 shadow-[0_10px_30px_rgba(15,23,42,0.04)] md:col-span-3">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs uppercase tracking-[0.35em] text-[#6B7280]">{t('fastcode.leaderboard.pill')}</p>
-              <h3 className="text-lg font-bold text-[#0F172A]">{t('fastcode.leaderboard.title')}</h3>
+              <p className="text-xs uppercase tracking-[0.35em] text-[#6B7280]">
+                {t('fastcode.leaderboard.pill')}
+              </p>
+              <h3 className="text-lg font-bold text-[#0F172A]">
+                {t('fastcode.leaderboard.title')}
+              </h3>
             </div>
-            <span className="rounded-full bg-[#0A4A8A]/10 px-3 py-1 text-xs font-semibold text-[#0A4A8A] transition-colors duration-300">
+            <span className="rounded-full bg-[#0A4A8A]/10 px-3 py-1 text-xs font-semibold text-[#0A4A8A]">
               {t('fastcode.leaderboard.badge')}
             </span>
           </div>
+
           <div className="mt-4 grid gap-3 md:grid-cols-3">
             {TOP_PLAYERS.slice(0, 3).map((player, index) => (
-              <div
-                key={player.name}
-                className="rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] p-4 shadow-sm transition-colors duration-300"
-              >
+              <div key={player.name} className="rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] p-4 shadow-sm">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-base font-semibold text-[#0A4A8A] transition-colors duration-300">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-base font-semibold text-[#0A4A8A]">
                     #{index + 1}
                   </div>
                   <div>
                     <p className="text-sm font-semibold text-[#0F172A]">{player.name}</p>
-                    <p className="text-xs text-[#6B7280]">{t('fastcode.leaderboard.streak')}: {player.streak}</p>
+                    <p className="text-xs text-[#6B7280]">
+                      {t('fastcode.leaderboard.streak')}: {player.streak}
+                    </p>
                   </div>
                 </div>
+
                 <div className="mt-3 flex items-center justify-between text-sm">
                   <div>
-                    <p className="text-xs uppercase text-[#6B7280]">{t('fastcode.leaderboard.wpm')}</p>
+                    <p className="text-xs uppercase text-[#6B7280]">
+                      {t('fastcode.leaderboard.wpm')}
+                    </p>
                     <p className="text-lg font-bold text-[#0F172A]">{player.wpm}</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-xs uppercase text-[#6B7280]">{t('fastcode.leaderboard.accuracy')}</p>
+                    <p className="text-xs uppercase text-[#6B7280]">
+                      {t('fastcode.leaderboard.accuracy')}
+                    </p>
                     <p className="text-lg font-bold text-[#16a34a]">{player.accuracy}%</p>
                   </div>
                 </div>
+
               </div>
             ))}
           </div>
         </div>
       </div>
 
-      <div className="relative rounded-3xl border border-[#E5E7EB] bg-white shadow-[0_25px_60px_rgba(15,23,42,0.05)] transition-colors duration-300">
-        {showTooltip ? (
-          <span className="absolute left-6 top-6 rounded-full bg-[#0A4A8A] px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white shadow transition-colors duration-300">
+      {/* Code Box */}
+      <div className="relative rounded-3xl border border-[#E5E7EB] bg-white shadow-[0_25px_60px_rgba(15,23,42,0.05)]">
+        {showTooltip && (
+          <span className="absolute left-6 top-6 rounded-full bg-[#0A4A8A] px-3 py-1 text-xs font-semibold uppercase text-white shadow">
             {t('fastcode.tooltip')}
           </span>
-        ) : null}
+        )}
+
         <div
           ref={editorRef}
           role="textbox"
           tabIndex={0}
           aria-label="Fast code typing area"
-          className="mt-16 max-h-[380px] overflow-y-auto cursor-text px-6 pb-6 font-mono text-sm leading-relaxed text-[#0F172A] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0A4A8A]/40 transition-colors duration-300"
+          className="mt-16 max-h-[380px] overflow-y-auto cursor-text px-6 pb-6 font-mono text-sm leading-relaxed text-[#0F172A]"
           onClick={() => editorRef.current?.focus()}
         >
           <pre className="whitespace-pre-wrap">{highlightedSnippet}</pre>
         </div>
       </div>
 
-      <div className="rounded-2xl border border-[#E5E7EB] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.05)] transition-colors duration-300">
+      {/* Progress Bar */}
+      <div className="rounded-2xl border border-[#E5E7EB] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.05)]">
         <div className="text-xs font-semibold uppercase tracking-[0.3em] text-[#6B7280]">
           {t('fastcode.progress')}
         </div>
+
         <div className="mt-4 h-2 w-full rounded-full bg-[#0A4A8A]/10">
           <div
             className="h-full rounded-full bg-gradient-to-r from-[#0A4A8A] to-[#22c55e] transition-all duration-300"
@@ -408,17 +379,17 @@ const FastCodeGame = () => {
         </div>
       </div>
 
+      {/* Snippet Selector */}
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-        <div className="flex flex-wrap gap-3">
-          <button
-            type="button"
-            onClick={handleReset}
-            className="rounded-full border border-[#E5E7EB] bg-white px-5 py-2 text-sm font-semibold text-[#0F172A] transition-colors duration-300 hover:border-[#0A4A8A]/40"
-          >
-            ↺ {t('fastcode.controls.reset')}
-          </button>
-        </div>
-        <div className="flex items-center gap-3 rounded-2xl border border-[#E5E7EB] bg-white px-4 py-2 shadow-[0_10px_25px_rgba(15,23,42,0.05)] transition-colors duration-300">
+        <button
+          type="button"
+          onClick={handleReset}
+          className="rounded-full border border-[#E5E7EB] bg-white px-5 py-2 text-sm font-semibold text-[#0F172A] hover:border-[#0A4A8A]/40"
+        >
+          ↺ {t('fastcode.controls.reset')}
+        </button>
+
+        <div className="flex items-center gap-3 rounded-2xl border border-[#E5E7EB] bg-white px-4 py-2 shadow-[0_10px_25px_rgba(15,23,42,0.05)]">
           <span className="text-xl">{activeLanguageIcon}</span>
           <select
             value={snippetIndex}
@@ -434,44 +405,66 @@ const FastCodeGame = () => {
         </div>
       </div>
 
+      {/* Summary Modal */}
       {isFinished && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-[#0F172A]/70 px-4 py-8 backdrop-blur-sm"
-          role="dialog"
-          aria-modal
-        >
-          <div
-            className="relative w-full max-w-xl max-h-[80vh] overflow-y-auto animate-fade-in rounded-3xl border border-[#E5E7EB] bg-white p-6 text-center shadow-[0_25px_60px_rgba(15,23,42,0.35)] transition-colors duration-300"
-          >
-            <p className="text-xs uppercase tracking-[0.35em] text-[#6B7280]">{t('fastcode.summary.title')}</p>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0F172A]/70 px-4 py-8 backdrop-blur-sm">
+          <div className="relative w-full max-w-xl max-h-[80vh] overflow-y-auto animate-fade-in rounded-3xl border border-[#E5E7EB] bg-white p-6 text-center shadow-[0_25px_60px_rgba(15,23,42,0.35)]">
+            
+            <p className="text-xs uppercase tracking-[0.35em] text-[#6B7280]">
+              {t('fastcode.summary.title')}
+            </p>
+
             <div className="mt-4 grid gap-4 sm:grid-cols-2">
-              <div className="rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] p-4 transition-colors duration-300">
+              <div className="rounded-2xl border border-[#E5E7EB] bg-white p-4">
                 <p className="text-xs uppercase text-[#6B7280]">{t('fastcode.summary.finalWpm')}</p>
                 <p className="text-3xl font-extrabold text-[#0F172A]">{formatNumber(wpm)}</p>
               </div>
-              <div className="rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] p-4 transition-colors duration-300">
+
+              <div className="rounded-2xl border border-[#E5E7EB] bg-white p-4">
                 <p className="text-xs uppercase text-[#6B7280]">{t('fastcode.summary.accuracy')}</p>
                 <p className="text-3xl font-extrabold text-[#0F172A]">{formatNumber(accuracy)}%</p>
               </div>
-              <div className="rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] p-4 transition-colors duration-300">
+
+              <div className="rounded-2xl border border-[#E5E7EB] bg-white p-4">
                 <p className="text-xs uppercase text-[#6B7280]">{t('fastcode.summary.correct')}</p>
                 <p className="text-2xl font-bold text-[#16a34a]">{correctChars}</p>
               </div>
-              <div className="rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] p-4 transition-colors duration-300">
+
+              <div className="rounded-2xl border border-[#E5E7EB] bg-white p-4">
                 <p className="text-xs uppercase text-[#6B7280]">{t('fastcode.summary.incorrect')}</p>
                 <p className="text-2xl font-bold text-[#dc2626]">{incorrectChars}</p>
               </div>
             </div>
+
+            {/* NEW — Typed / Remaining / Total stats */}
+            <div className="mt-4 grid gap-4 sm:grid-cols-3">
+              <div className="rounded-2xl border border-[#E5E7EB] bg-white p-4">
+                <p className="text-xs uppercase text-[#6B7280]">{t('fastcode.summary.typed')}</p>
+                <p className="text-2xl font-bold text-[#0F172A]">{typedChars}</p>
+              </div>
+
+              <div className="rounded-2xl border border-[#E5E7EB] bg-white p-4">
+                <p className="text-xs uppercase text-[#6B7280]">{t('fastcode.summary.remaining')}</p>
+                <p className="text-2xl font-bold text-[#0F172A]">{remainingChars}</p>
+              </div>
+
+              <div className="rounded-2xl border border-[#E5E7EB] bg-white p-4">
+                <p className="text-xs uppercase text-[#6B7280]">{t('fastcode.summary.total')}</p>
+                <p className="text-2xl font-bold text-[#0F172A]">{totalChars}</p>
+              </div>
+            </div>
+
             <button
               type="button"
               onClick={handleReset}
-              className="mt-6 inline-flex items-center justify-center rounded-full bg-[#0A4A8A] px-6 py-2 text-sm font-semibold text-white transition-colors duration-300 hover:opacity-90"
+              className="mt-6 inline-flex items-center justify-center rounded-full bg-[#0A4A8A] px-6 py-2 text-sm font-semibold text-white hover:opacity-90"
             >
               Play again
             </button>
           </div>
         </div>
       )}
+
     </section>
   )
 }
