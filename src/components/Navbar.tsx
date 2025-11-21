@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom"
 import BetaBanner from "./BetaBanner"
-import { LANGUAGE_OPTIONS } from "../i18n/translations"
+import { LANGUAGE_OPTIONS, Locale } from "../i18n/translations"
 import { useLanguage } from "../i18n/LanguageProvider"
 
 const navLinkClasses =
@@ -31,9 +31,6 @@ export default function Navbar() {
                 <NavLink className={navLinkClasses} to="/login">
                     {t("nav.login")}
                 </NavLink>
-                <NavLink className={navLinkClasses} to="/signup">
-                    {t("nav.signup")}
-                </NavLink>
 
                 <label className="flex items-center gap-2 rounded-full border border-[#E5E7EB] bg-white px-3 py-1 text-xs font-semibold text-[#0F172A] transition-colors duration-300">
                     <span>{t("language.selectLabel")}</span>
@@ -42,7 +39,7 @@ export default function Navbar() {
                         aria-label={t("language.selectLabel")}
                         className="bg-transparent text-sm font-bold text-[#0F172A] outline-none cursor-pointer"
                         value={locale}
-                        onChange={(e) => setLocale(e.target.value as any)}
+                        onChange={(e) => setLocale(e.target.value as Locale)}
                     >
                         {LANGUAGE_OPTIONS.map((option) => (
                             <option key={option.value} value={option.value}>

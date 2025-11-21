@@ -1,10 +1,9 @@
-import {Navigate, Route, Routes} from 'react-router-dom'
-import LoginPage from './features/auth/LoginPage'
-import SignupPage from './features/auth/SignupPage'
+import { Navigate, Route, Routes } from 'react-router-dom'
 import FastCodeGame from './features/fastcode/FastCodeGame'
 import TopPlayersPage from './features/top-players/TopPlayersPage'
-import Navbar from "./components/Navbar";
-import {useLanguage} from "./i18n/LanguageProvider";
+import Navbar from './components/Navbar'
+import { useLanguage } from './i18n/LanguageProvider'
+import TelegramLoginPage from './pages/TelegramLoginPage'
 
 
 const App = () => {
@@ -17,8 +16,7 @@ const App = () => {
                     <Routes>
                         <Route element={<FastCodeGame/>} path="/"/>
                         <Route element={<TopPlayersPage/>} path="/top-players"/>
-                        <Route element={<LoginPage/>} path="/login"/>
-                        <Route element={<SignupPage/>} path="/signup"/>
+                        <Route element={<TelegramLoginPage/>} path="/login"/>
                         <Route element={<Navigate replace to="/"/>} path="*"/>
                     </Routes>
                 </main>
