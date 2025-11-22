@@ -21,22 +21,19 @@ for (let i = 0; i < 10; i += 1) {
     language: 'JavaScript',
     title: 'Arrow function',
     description: 'JavaScript’dagi funktsiya yozishning qisqa, zamonaviy usuli.',
-    code: `// Foydalanuvchilar ro'yxati
-const users = [
-  { name: "Ali", age: 17 },
-  { name: "Vali", age: 20 },
-  { name: "Hasan", age: 15 },
-  { name: "Husan", age: 22 }
-];
+    code: `const extractUppercase = text => {
+  let result = "";
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (c >= "A" && c <= "Z") {
+      result += c;
+    }
+  }
+  return result;
+};
 
-// 18 yoshdan katta foydalanuvchilarni filter qilamiz
-const kattalar = users.filter(user => user.age >= 18);
-
-// Har birining malumotini stringga o'zgartiramiz
-const natija = kattalar.map(user => user.name + "(" + user.age + " yosh)");
-
-// Ekranga chiqaramiz
-natija.forEach(item => console.log(item));`
+const t = "Bu Tez Kod YoZisH Uchun Tayyor Misol";
+console.log(extractUppercase(t));`
   },
 
   {
