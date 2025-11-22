@@ -15,29 +15,30 @@ for (let i = 0; i < 10; i += 1) {
   console.log(fibonacci(i))
 }`,
   },
+
   {
     id: 'js-arrow-function',
     language: 'JavaScript',
     title: 'Arrow function',
     description: 'JavaScript’dagi funktsiya yozishning qisqa, zamonaviy usuli.',
     code: `// Foydalanuvchilar ro'yxati
-  const users = [
-    { name: "Ali", age: 17 },
-    { name: "Vali", age: 20 },
-    { name: "Hasan", age: 15 },
-    { name: "Husan", age: 22 }
-  ];
-  
-  // 18 yoshdan katta foydalanuvchilarni filter qilamiz
-  const kattalar = users.filter(user => user.age >= 18);
-  
-  // Har birining malumotini stringga o'zgartiramiz
-  const natija = kattalar.map(user => \`${user.name} (${user.age} yosh)\`);
-  
-  // Ekranga chiqaramiz
-  natija.forEach(item => console.log(item));
-  `
+const users = [
+  { name: "Ali", age: 17 },
+  { name: "Vali", age: 20 },
+  { name: "Hasan", age: 15 },
+  { name: "Husan", age: 22 }
+];
+
+// 18 yoshdan katta foydalanuvchilarni filter qilamiz
+const kattalar = users.filter(user => user.age >= 18);
+
+// Har birining malumotini stringga o'zgartiramiz
+const natija = kattalar.map(user => \`${user.name} (${user.age} yosh)\`);
+
+// Ekranga chiqaramiz
+natija.forEach(item => console.log(item));`
   },
+
   {
     id: 'py-context',
     language: 'Python',
@@ -58,6 +59,7 @@ def timer(label: str):
 with timer("fetch data"):
     fetch_remote_data()`,
   },
+
   {
     id: 'html-card',
     language: 'HTML',
@@ -71,6 +73,7 @@ with timer("fetch data"):
   <button class="cta">Start Now</button>
 </section>`,
   },
+
   {
     id: 'react-hook',
     language: 'React',
@@ -80,10 +83,11 @@ with timer("fetch data"):
 
 export const useToggle = (initial = false) => {
   const [value, setValue] = useState(initial)
-  const toggle = useCallback(() => setValue((prev) => !prev), [])
+  const toggle = useCallback(() => setValue(prev => !prev), [])
   return [value, toggle] as const
 }`,
   },
+
   {
     id: 'css-keyframes',
     language: 'CSS',
@@ -105,5 +109,6 @@ export const useToggle = (initial = false) => {
   }
 }`,
   },
-]
+];
+
 
