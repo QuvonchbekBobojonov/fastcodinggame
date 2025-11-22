@@ -16,6 +16,29 @@ for (let i = 0; i < 10; i += 1) {
 }`,
   },
   {
+    id: 'js-arrow-function',
+    language: 'JavaScript',
+    title: 'Arrow function',
+    description: 'JavaScript’dagi funktsiya yozishning qisqa, zamonaviy usuli.',
+    code: `// Foydalanuvchilar ro'yxati
+  const users = [
+    { name: "Ali", age: 17 },
+    { name: "Vali", age: 20 },
+    { name: "Hasan", age: 15 },
+    { name: "Husan", age: 22 }
+  ];
+  
+  // 18 yoshdan katta foydalanuvchilarni filter qilamiz
+  const kattalar = users.filter(user => user.age >= 18);
+  
+  // Har birining malumotini stringga o'zgartiramiz
+  const natija = kattalar.map(user => \`${user.name} (${user.age} yosh)\`);
+  
+  // Ekranga chiqaramiz
+  natija.forEach(item => console.log(item));
+  `
+  },
+  {
     id: 'py-context',
     language: 'Python',
     title: 'Context Timer',
