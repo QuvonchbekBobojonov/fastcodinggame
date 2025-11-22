@@ -33,7 +33,7 @@ const users = [
 const kattalar = users.filter(user => user.age >= 18);
 
 // Har birining malumotini stringga o'zgartiramiz
-const natija = kattalar.map(user => \`${user.name} (${user.age} yosh)\`);
+const natija = kattalar.map(user => user.name + "(" + user.age + " yosh)");
 
 // Ekranga chiqaramiz
 natija.forEach(item => console.log(item));`
