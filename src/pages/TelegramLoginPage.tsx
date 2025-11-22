@@ -1,8 +1,10 @@
 import { useEffect, useRef } from 'react'
 import { useLanguage } from '../i18n/LanguageProvider'
+import TelegramLoginButton from 'react-telegram-login';
 
 const BOT_USERNAME = 'fastcodingidbot'
 const AUTH_URL = 'https://fastcoding.moorfo.uz/login'
+
 
 const TelegramIcon = () => (
   <div className="flex h-28 w-28 items-center justify-center rounded-full bg-[#e0f2ff] shadow-inner shadow-[#60a5fa]/40 dark:bg-[#172244]">
@@ -21,32 +23,10 @@ const TelegramLoginPage = () => {
   const { t } = useLanguage()
   const containerRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => {
-    // Load Telegram OAuth widget script
-    const script = document.createElement('script')
-    script.src = 'https://telegram.org/js/telegram-widget.js?22'
-    script.async = true
-    script.setAttribute('data-telegram-login', BOT_USERNAME)
-    script.setAttribute('data-size', 'medium')
-    script.setAttribute('data-auth-url', AUTH_URL)
-    script.setAttribute('data-request-access', 'write')
-
-    if (containerRef.current) {
-      containerRef.current.appendChild(script)
-    }
-  }, [])
-
-  const triggerTelegramLogin = () => {
-    const iframe = containerRef.current?.querySelector('iframe')
-
-    if (!iframe) return
-
-    const innerBtn =
-      iframe.contentWindow?.document.querySelector('button')
-
-    innerBtn?.click()
-  }
-
+  const handleTelegramResponse = response => {
+    console.log(response);
+  };
+  
   return (
     <section className="w-full max-w-3xl rounded-3xl border border-[#e5e5e5] bg-white px-6 py-10 text-[#0f172a] shadow-[0_25px_60px_rgba(15,23,42,0.08)] transition dark:border-white/10 dark:bg-[#0b1120] dark:text-white sm:px-12">
       <div className="flex flex-col items-center gap-6 text-center">
@@ -64,12 +44,7 @@ const TelegramLoginPage = () => {
         <div ref={containerRef} style={{ display: 'none' }} />
 
         {/* Custom button triggering widget */}
-        <button
-          onClick={triggerTelegramLogin}
-          className="inline-flex w-full max-w-sm items-center justify-center rounded-full bg-[#229ED9] px-8 py-3 text-base font-semibold text-white transition hover:scale-[1.01] hover:bg-[#1c8abf] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#229ED9]"
-        >
-          {t('telegram.login.button')}
-        </button>
+        <TelegramLoginButton dataOnauth={handleTelegramResponse} botName="@fastcodingidbot" />
       </div>
     </section>
   )
